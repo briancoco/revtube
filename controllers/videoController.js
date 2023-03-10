@@ -138,7 +138,7 @@ const streamVideo = async (req, res) => {
         end
     });
     videoStream.pipe(res);
-
+    
 }
 
 const uploadImage = (req, res) => {
