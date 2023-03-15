@@ -12,7 +12,7 @@ const Header = () => {
       </Link>
       <nav className='navbar'>
         <Link to='/upload'><FcClapperboard size='25px'/></Link>
-        <Link to='/upload'><FcBusinessman size='25px'/></Link>
+        <Link to='/login'><FcBusinessman size='25px'/></Link>
       </nav>
     </div>
   )

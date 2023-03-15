@@ -131,13 +131,19 @@ body {
 }
 
 .submit-btn {
-  width: 100px;
+  width: 150px;
+  height: 50px;
   border-radius: 8px;
   align-self: center;
+  margin-top: auto;
+  font-weight: bold;
+  background-color: white;
+  border: none;
 }
 
 input {
   margin-bottom: 25px;
+  padding: 2.5px;
 }
 
 .VideoSidebar {
@@ -166,3 +172,39 @@ input {
   font-size: 10px;
 }
 
+.Login {
+  display: flex;
+  justify-content: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  height: 400px;
+  padding: 10px;
+  background-color: #f5f3f3;
+  box-shadow: 2px 2px 5px 2px grey;
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+}
+
+#email-login {
+  height: 25px;
+}
+
+#pwd-login {
+  height: 25px;
+}
+
+#username-login {
+  height: 25px;
+}
+
+.Register {
+  display: flex;
+  justify-content: center;
+}

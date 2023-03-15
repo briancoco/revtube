@@ -10,12 +10,15 @@ const {
     updateVideo,
     uploadImage
 } = require('../controllers/videoController');
+
+const authMiddleware = require('../middleware/authMiddleware');
+
 //so router acts as an extension of our web server
 //it allows us to define routes in a seperate file
 //and inside our main express app, we use it as middleware
 
-router.post('/upload', uploadVideo);
-router.post('/upload/image', uploadImage);
+router.post('/upload', authMiddleware, uploadVideo);
+router.post('/upload/image', authMiddleware, uploadImage);
 router.get('/stream/:id', streamVideo);
 
 router.route('/').get(getVideos).post(createVideo)
