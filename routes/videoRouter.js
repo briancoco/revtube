@@ -21,7 +21,7 @@ router.post('/upload', authMiddleware, uploadVideo);
 router.post('/upload/image', authMiddleware, uploadImage);
 router.get('/stream/:id', streamVideo);
 
-router.route('/').get(getVideos).post(createVideo)
+router.route('/').get(getVideos).post(authMiddleware, createVideo)
 router.route('/:id').get(getVideo).delete(deleteVideo).patch(updateVideo)
 
 

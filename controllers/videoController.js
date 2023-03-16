@@ -29,15 +29,19 @@ const createVideo = async (req, res) => {
     //if it doesn't exist then we'll get an error and our errorHandler middleware will run
     //TO-DO make this error customizable want 400 status code and custom msg
 
-
+    req.body.createdBy = req.user.userId;
     const video = await Video.create(req.body);
     res.status(statusCodes.CREATED).json({msg: 'Video created successfully!', video});
 }
 
 const getVideos = async (req, res) => {
     //gets info of videos stored on our server
-    
-    const videos = await Video.find({});
+    let videos = await Video.find({});
+    await Video.populate(videos, {
+        path: 'createdBy',
+        select: 'username'
+    });
+
     //TO-DO add different querying functionalities
     res.status(statusCodes.OK).json({videos});
 
@@ -49,7 +53,11 @@ const getVideo = async (req, res) => {
     //and perform query on DB
 
     const {id} = req.params;
-    const video = await Video.findOne({_id:id});
+    let video = await Video.findOne({_id:id});
+    await video.populate({
+        path: 'createdBy',
+        select: 'username'
+    });
 
     res.status(statusCodes.OK).json({video});
 }

@@ -30,6 +30,7 @@ const Home = () => {
         name={video.name}
         id={video._id}
         thumbnail={video.thumbnail}
+        username={video.createdBy.username}
         
       />)}
     </div>

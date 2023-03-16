@@ -10,6 +10,7 @@ const connectDB = require('./database/dbConnect');
 //routers
 const videoRouter = require('./routes/videoRouter');
 const authRouter = require('./routes/authRouter');
+const commentRouter = require('./routes/commentRouter');
 
 //middleware
 const fileParser = require('express-fileupload');
@@ -25,6 +26,7 @@ app.use(cookieParser());
 
 app.use('/api/videos', videoRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/comments', commentRouter);
 
 app.use(notFoundMiddleware); //hit if request does not match any defined routes
 app.use(errorHandlerMiddleware); //hit if error in handling request
