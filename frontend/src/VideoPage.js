@@ -2,49 +2,75 @@ import React from 'react'
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react'
 import VideoSidebar from './VideoSidebar';
+import Comments from './Comments';
+import {BiCaretRightSquare} from 'react-icons/bi';
+import {BsHeartFill, BsHeart, BsFillChatRightTextFill} from 'react-icons/bs';
+
 const VideoPage = () => {
 
   const {id} = useParams();
   const [videoId, setVideoId] = useState(id);
   const [sidebar, setSidebar] = useState([]);
   const [video, setVideo] = useState(null);
-
-  const getVideo = async () => {
-    try {
-      let response = await fetch(`/api/videos/${id}`);
-
-      if(!response.ok) {
-        throw new Error('Video not found');
-      }
-
-      response = await response.json();
-
-      return response.video;
-
-    } catch (error) {
-      console.log(error.message);
-    }
-
-    
-
-  }
-
-  const getSidebarVideos = async () => {
-    let response = await fetch('/api/videos');
-    response = await response.json();
-    response.videos = response.videos.filter((video) => video._id !== id);
-    return response.videos;
-  };
+  const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState(0);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
+
+    const getVideo = async () => {
+      try {
+        let response = await fetch(`/api/videos/${videoId}`);
+  
+        if(!response.ok) {
+          throw new Error('Video not found');
+        }
+  
+        response = await response.json();
+  
+        return response.video;
+  
+      } catch (error) {
+        console.log(error.message);
+      }
+  
+      
+  
+    }
+  
+    const getSidebarVideos = async () => {
+      let response = await fetch('/api/videos');
+      response = await response.json();
+      response.videos = response.videos.filter((video) => video._id !== id);
+      return response.videos;
+    };
+
     const setup = async () => {
       const sidebarVids = await getSidebarVideos();
       const videoInfo = await getVideo();
       setSidebar(sidebarVids);
       setVideo(videoInfo);
+      setLikes(videoInfo.likes);
     }
     setup();
   }, [videoId])
+
+  useEffect(() => {
+    const handleLikes = async () => {
+      const response = await fetch(`/api/videos/${videoId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({likes})
+      });
+      if(!response.ok) {
+        throw new Error('Something went wrong');
+      }
+    }
+    if(!liked && !likes) return;
+    handleLikes();
+  }, [liked]);
 
 
   return (
@@ -54,17 +80,44 @@ const VideoPage = () => {
 
       <div className='video-bottom'>
         <div className='video-info'>
-          <div>
+          <div className='video-header'>
             <h1>{video ? video.name : ''}</h1>
             <h5>4 years ago</h5>
             <div className='video-user'>
-              <img className='profile-icon' alt='' src='https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=s0aTdmT5aU6b8ot7VKm11DeID6NctRCpB755rA1BIP0='></img>
+              <img className='profile-icon' alt='' src={video ? video.createdBy.pfp : ''}></img>
               <span className='video-user-name'>{video ? video.createdBy.username : ''}</span>
             </div>
           </div>
+          <section className='video-stats'>
+            <span className='video-stat'>
+              <BiCaretRightSquare size={'20px'}/>
+              <span>164</span>
+            </span>
+            <span className='video-stat'>
+              <button className='like-button' onClick={() => {
+                setLiked(!liked);
+                if(liked) {
+                  setLikes(likes - 1);
+                } else {
+                  setLikes(likes + 1);
+                }
+              }}>
+                {liked ? <BsHeartFill size={'20px'} /> : <BsHeart size={'20px'} />}
+              </button>
+              <span>{likes}</span>
+              
+            </span>
+
+            <span className='video-stat'>
+              <BsFillChatRightTextFill size={'20px'} style={{paddingRight:'5px'}}/>
+              <span>{comments.length}</span>
+              
+            </span>
+          </section>
           <p>
            { video ? video.description : ''}
           </p>
+          <Comments videoId={id} comments={comments} setComments={setComments}/>
         </div>
         <div className='video-sidebar'>
           {sidebar.map((video) => <VideoSidebar 

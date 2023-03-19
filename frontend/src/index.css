@@ -35,8 +35,8 @@ body {
 .video-info {
   margin-left: 80px;
   width: 900px;
-  border-bottom: 0.5px solid whitesmoke;
-  border-right: 0.5px solid whitesmoke;
+  border-bottom: 1px solid whitesmoke;
+  border-right: 1px solid whitesmoke;
 }
 
 .video-sidebar {
@@ -207,4 +207,48 @@ input {
 .Register {
   display: flex;
   justify-content: center;
+}
+
+.Comments {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px;
+}
+
+.Comment {
+  border-bottom: 2px solid whitesmoke;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comment-content {
+  margin-left: 40px;
+}
+
+.video-stats {
+  display: flex;
+  gap: 20px;
+  margin: 10px;
+}
+
+.video-stat {
+  display: flex;
+  align-items: center;
+}
+
+.video-header {
+  border-bottom: 2px solid whitesmoke;
+  padding-bottom: 10px;
+}
+
+.like-button {
+  background-color: white;
+  border: none;
+  display: flex;
+  align-items: flex-end;
 }

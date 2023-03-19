@@ -56,7 +56,7 @@ const getVideo = async (req, res) => {
     let video = await Video.findOne({_id:id});
     await video.populate({
         path: 'createdBy',
-        select: 'username'
+        select: 'username pfp'
     });
 
     res.status(statusCodes.OK).json({video});
