@@ -41,7 +41,7 @@ const VideoPage = () => {
     const getSidebarVideos = async () => {
       let response = await fetch('/api/videos');
       response = await response.json();
-      response.videos = response.videos.filter((video) => video._id !== id);
+      response.videos = response.videos.filter((video) => video._id !== videoId);
       return response.videos;
     };
 
@@ -51,26 +51,26 @@ const VideoPage = () => {
       setSidebar(sidebarVids);
       setVideo(videoInfo);
       setLikes(videoInfo.likes);
+      setLiked(videoInfo.liked);
     }
     setup();
   }, [videoId])
 
-  useEffect(() => {
-    const handleLikes = async () => {
-      const response = await fetch(`/api/videos/${videoId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({likes})
-      });
-      if(!response.ok) {
-        throw new Error('Something went wrong');
+  const handleLikes = async () => {
+    const response = await fetch(`/api/videos/likes/${videoId}`, {
+      method: 'POST'
+    });
+    if(!response.ok) {
+      throw new Error('Something went wrong');
+    } else {
+      setLiked(!liked);
+      if(liked) {
+        setLikes(likes - 1);
+      } else {
+        setLikes(likes + 1);
       }
     }
-    if(!liked && !likes) return;
-    handleLikes();
-  }, [liked]);
+  }
 
 
   return (
@@ -94,14 +94,7 @@ const VideoPage = () => {
               <span>164</span>
             </span>
             <span className='video-stat'>
-              <button className='like-button' onClick={() => {
-                setLiked(!liked);
-                if(liked) {
-                  setLikes(likes - 1);
-                } else {
-                  setLikes(likes + 1);
-                }
-              }}>
+              <button className='like-button' onClick={handleLikes}>
                 {liked ? <BsHeartFill size={'20px'} /> : <BsHeart size={'20px'} />}
               </button>
               <span>{likes}</span>

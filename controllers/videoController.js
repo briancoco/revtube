@@ -6,6 +6,7 @@ const readStatsPromise = util.promisify(fs.stat);
 //const existsPromise = util.promisify(fs.existsSync);
 const Video = require('../model/video');
 const CustomAPIError = require('../errors/custom-error');
+const mongoose = require('mongoose');
 
 const createVideo = async (req, res) => {
     //user passes in video info through req body
@@ -42,6 +43,7 @@ const getVideos = async (req, res) => {
         select: 'username'
     });
 
+
     //TO-DO add different querying functionalities
     res.status(statusCodes.OK).json({videos});
 
@@ -52,14 +54,35 @@ const getVideo = async (req, res) => {
     //first get id from route param
     //and perform query on DB
 
+    //determine if user is logged in
+    //determine if user liked the video
+    //determine and send back number of likes
+
+
+
     const {id} = req.params;
+    let liked = false;
+
+    //TODO TOMORROW
     let video = await Video.findOne({_id:id});
     await video.populate({
         path: 'createdBy',
         select: 'username pfp'
     });
 
-    res.status(statusCodes.OK).json({video});
+    if(req.user && video.likes.includes(req.user.userId)) {
+        liked = true;
+    }
+
+    let response = {
+        name: video.name,
+        description: video.description,
+        liked,
+        likes: video.likes.length,
+        createdBy: video.createdBy
+    }
+
+    res.status(statusCodes.OK).json({video: response});
 }
 
 const deleteVideo = async (req, res) => {
@@ -70,6 +93,10 @@ const deleteVideo = async (req, res) => {
 }
 
 const updateVideo = async (req, res) => {
+    //need to add user roles
+    //only admins or user who created the video can update it
+    //if user is neither admin or owner, they can only add views or likes
+
     const {id} = req.params;
     const video = await Video.findOneAndUpdate({_id:id}, req.body, {
         new: true,
@@ -77,6 +104,32 @@ const updateVideo = async (req, res) => {
     });
 
     res.status(statusCodes.OK).json({video});
+}
+
+const updateVideoLikes = async (req, res) => {
+    const {id} = req.params;
+    const {userId} = req.user;
+
+    //perform query on DB to get video
+    //check if user already liked the video
+    //if yes, remove id from array, otherwise add it
+    //send back 200 status
+
+    const video = await Video.findOne({_id: id});
+    if(!video) {
+        throw new CustomAPIError('Video does not exist', statusCodes.NOT_FOUND);
+    }
+
+    const userLikedVideo = video.likes.includes(userId);
+    if(userLikedVideo) {
+        video.likes = video.likes.filter(like => like != userId);
+    } else {
+        video.likes.push(userId);
+    }  
+
+    await video.save();
+    res.status(statusCodes.OK).json({video});   
+
 }
 
 const uploadVideo = async (req, res) => {
@@ -175,5 +228,6 @@ module.exports = {
     getVideos,
     deleteVideo,
     updateVideo,
-    uploadImage
+    uploadImage,
+    updateVideoLikes
 }
