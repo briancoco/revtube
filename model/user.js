@@ -30,7 +30,11 @@ const UserSchema = new mongoose.Schema({
     pfp: {
         type: String,
         default: '/images/defaultpfp.png'
-    }
+    },
+    watched: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'videos'
+    }]
 })
 
 UserSchema.pre('save', async function  () {

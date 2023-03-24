@@ -9,7 +9,8 @@ const {
     deleteVideo,
     updateVideo,
     uploadImage,
-    updateVideoLikes
+    updateVideoLikes,
+    updateVideoViews
 } = require('../controllers/videoController');
 
 const authMiddleware = require('../middleware/authMiddleware');
@@ -23,6 +24,7 @@ router.post('/upload', authMiddleware, uploadVideo);
 router.post('/upload/image', authMiddleware, uploadImage);
 router.get('/stream/:id', streamVideo);
 router.post('/likes/:id', authMiddleware, updateVideoLikes);
+router.post('/views/:id', userMiddleware, updateVideoViews);
 
 router.route('/').get(getVideos).post(authMiddleware, createVideo)
 router.route('/:id').get(userMiddleware, getVideo).delete(deleteVideo).patch(authMiddleware, updateVideo)

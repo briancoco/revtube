@@ -16,7 +16,19 @@ const VideoPage = () => {
   const [likes, setLikes] = useState(0);
   const [comments, setComments] = useState([]);
 
+  
+
   useEffect(() => {
+
+    const incrementViews = async () => {
+      const response = await fetch(`/api/videos/views/${videoId}`, {
+        method: 'POST'
+      });
+  
+      if(!response.ok) {
+        console.log('failed to increment views');
+      }
+    }
 
     const getVideo = async () => {
       try {
@@ -33,9 +45,6 @@ const VideoPage = () => {
       } catch (error) {
         console.log(error.message);
       }
-  
-      
-  
     }
   
     const getSidebarVideos = async () => {
@@ -45,6 +54,8 @@ const VideoPage = () => {
       return response.videos;
     };
 
+    
+
     const setup = async () => {
       const sidebarVids = await getSidebarVideos();
       const videoInfo = await getVideo();
@@ -52,6 +63,7 @@ const VideoPage = () => {
       setVideo(videoInfo);
       setLikes(videoInfo.likes);
       setLiked(videoInfo.liked);
+      incrementViews();
     }
     setup();
   }, [videoId])
@@ -91,7 +103,7 @@ const VideoPage = () => {
           <section className='video-stats'>
             <span className='video-stat'>
               <BiCaretRightSquare size={'20px'}/>
-              <span>164</span>
+              <span>{video ? video.views : 0}</span>
             </span>
             <span className='video-stat'>
               <button className='like-button' onClick={handleLikes}>

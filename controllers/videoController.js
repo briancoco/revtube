@@ -3,10 +3,9 @@ const path = require('path');
 const fs = require('fs');
 const util = require('util');
 const readStatsPromise = util.promisify(fs.stat);
-//const existsPromise = util.promisify(fs.existsSync);
 const Video = require('../model/video');
 const CustomAPIError = require('../errors/custom-error');
-const mongoose = require('mongoose');
+const User = require('../model/user');
 
 const createVideo = async (req, res) => {
     //user passes in video info through req body
@@ -79,7 +78,8 @@ const getVideo = async (req, res) => {
         description: video.description,
         liked,
         likes: video.likes.length,
-        createdBy: video.createdBy
+        createdBy: video.createdBy,
+        views: video.views,
     }
 
     res.status(statusCodes.OK).json({video: response});
@@ -129,6 +129,38 @@ const updateVideoLikes = async (req, res) => {
 
     await video.save();
     res.status(statusCodes.OK).json({video});   
+
+}
+
+const updateVideoViews = async (req, res) => {
+    //increments view count of video by 1
+    //adds videoId to user watched array, if video is not already in it
+    //get videoId from route param
+    //perform query on DB for the video
+    //increment views by 1
+    //check if user is logged in
+    //if yes, perform query on DB to get user
+    //check if video is already in user watched array
+    //if no, add it
+
+    const {id} = req.params;
+    const video = await Video.findOne({_id: id});
+
+    if(!video) {
+        throw new CustomAPIError('Video does not exist', statusCodes.NOT_FOUND);
+    }
+
+    if(req.user) {
+        const user = await User.findOne({_id: req.user.userId});
+        if(!user.watched.includes(id)) {
+            video.views += 1;
+            user.watched.push(id);
+            await user.save();
+            await video.save();
+        }
+    }
+
+    res.status(statusCodes.OK).json({video});
 
 }
 
@@ -229,5 +261,6 @@ module.exports = {
     deleteVideo,
     updateVideo,
     uploadImage,
-    updateVideoLikes
+    updateVideoLikes,
+    updateVideoViews
 }
