@@ -39,7 +39,7 @@ const getVideos = async (req, res) => {
     let videos = await Video.find({});
     await Video.populate(videos, {
         path: 'createdBy',
-        select: 'username'
+        select: 'username pfp'
     });
 
 

@@ -87,8 +87,10 @@ const VideoPage = () => {
 
   return (
     <div className='VideoPage'>
+
+      <div className='video-player-wrapper'> 
       <video className='video-player' width='950px' muted autoPlay controls src={`/api/videos/stream/${id}`}></video>
-      
+      </div>
 
       <div className='video-bottom'>
         <div className='video-info'>

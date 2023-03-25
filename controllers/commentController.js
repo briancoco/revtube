@@ -7,6 +7,7 @@ const createComment = async (req, res) => {
     //attaches the userId to the req.body
     req.body.createdBy = req.user.userId;
     const comment = await Comment.create(req.body);
+    await comment.populate('createdBy', 'username pfp');
 
     res.status(statusCodes.CREATED).json({comment}); 
 }

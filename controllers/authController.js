@@ -48,7 +48,7 @@ const login = async (req, res) => {
 
     const isValidPassword = await user.comparePassword(password);
     if(!isValidPassword) {
-        throw new CustomAPIError('Invalid credentials', statusCodes.BAD_REQUEST);
+        throw new CustomAPIError('Invalid credentials(pass)', statusCodes.BAD_REQUEST);
     }
 
     //create JWT
