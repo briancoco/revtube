@@ -6,8 +6,6 @@ const Video = ({name, id, thumbnail, username, pfp}) => {
   //when clicked, it will hit the /api/videos/views/id route
   //which will increment the views of the video
 
-  
-
   return (
     <div className='Video' >
       <Link to={`/${id}`}><img className='thumbnail' src={thumbnail} alt={name}></img></Link>

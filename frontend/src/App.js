@@ -6,6 +6,7 @@ import VideoPage from './VideoPage';
 import UploadPage from './UploadPage';
 import Login from './Login';
 import Register from './Register';
+import ProfilePage from './ProfilePage';
 import { useNavigate } from 'react-router-dom';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path='upload' element={<UploadPage />} />
           <Route path='login' element={<Login navigate={navigate}/>} />
           <Route path='register' element={<Register navigate={navigate}/>} />
+          <Route path='profile' element={<ProfilePage />} />
         </Route>
       </Routes>
       
