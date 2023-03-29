@@ -67,7 +67,47 @@ const login = async (req, res) => {
 
 }
 
+const getCurrentUserData = async (req, res) => {
+    //perform query on DB to get user data
+    //reason we do not want to use the user data provided in
+    //our token's payload is because it may not be the most up to date info
+
+    const user = await User.findOne({_id: req.user.userId}).select('username pfp watched');
+    await user.populate({
+        path: 'watched',
+        select: 'name thumbnail createdBy',
+        populate: {
+            path: 'createdBy',
+            select: 'username pfp',
+            model: 'users'
+        }
+    });
+    
+    if(!user) {
+        throw new CustomAPIError('User does not exist', statusCodes.NOT_FOUND);
+    }
+
+    res.status(statusCodes.OK).json({user});
+
+
+}
+
+const updateCurrentUserData = async (req, res) => {
+    //as of right now just allow the func to update any property
+    //later when we add user roles we can restrict access
+    
+    const user = await User.findOneAndUpdate({_id: req.user.userId}, req.body, {
+        runValidators: true,
+        new: true
+    })
+    
+
+    res.status(statusCodes.OK).json({user});
+}
+
 module.exports = {
     register,
-    login
+    login,
+    getCurrentUserData,
+    updateCurrentUserData
 }

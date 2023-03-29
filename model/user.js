@@ -38,14 +38,17 @@ const UserSchema = new mongoose.Schema({
 })
 
 UserSchema.pre('save', async function  () {
+    //everytime we modify our userSchema, it will rehash our password :(
     //hash and salt password
+    if (!this.isModified('password')) return;
     const salt = await bcryptjs.genSalt();
     this.password = await bcryptjs.hash(this.password, salt);
 
 })
 
 UserSchema.methods.comparePassword = async function (pass) {
-    return bcryptjs.compare(pass, this.password);
+    const validPassword = await bcryptjs.compare(pass, this.password);
+    return validPassword
 }
 
 module.exports = mongoose.model('users', UserSchema);

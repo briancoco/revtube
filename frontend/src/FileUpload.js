@@ -80,7 +80,7 @@ function FileUpload({ user, setUser }) {
     <div className='image-upload-wrapper'>
         <input type="file" id="my-file-input" onChange={handleFileChange}/>
         <label htmlFor="my-file-input">Choose a file</label>
-        <button className='save-button' onClick={handleFileSave}>save</button>
+        {selectedFile && <button className='save-button' onClick={handleFileSave}>save</button>}
     </div>
   );
 }

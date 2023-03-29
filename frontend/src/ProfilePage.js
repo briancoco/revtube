@@ -39,7 +39,7 @@ const ProfilePage = () => {
             <div>
             <section className='profile-header'>
                 <img className='profile-img' src={user.pfp}></img>
-                <FileUpload setUser={setUser}/>
+                <FileUpload setUser={setUser} user={user}/>
                 <h1 className='profile-name'>Brian Nguyen</h1>
                 <p className='profile-username'>{user.username}</p>
             </section>
@@ -48,27 +48,16 @@ const ProfilePage = () => {
             <section className='profile-watch-history'>
                 <h2 className='profile-watch-history-title'>Watch History</h2>
                 <div className='profile-watch-history-videos'>
-                    <Video 
-                        name={'random video'}
-                        id={1}
-                        thumbnail={'https://i.ytimg.com/vi/2Z4m4lnjxkY/maxresdefault.jpg'}
-                        username={'briancoco'}
-                        pfp={'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png'}
-                    />
-                    <Video 
-                        name={'random video'}
-                        id={1}
-                        thumbnail={'https://i.ytimg.com/vi/2Z4m4lnjxkY/maxresdefault.jpg'}
-                        username={'briancoco'}
-                        pfp={'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png'}
-                    />
-                    <Video 
-                        name={'random video'}
-                        id={1}
-                        thumbnail={'https://i.ytimg.com/vi/2Z4m4lnjxkY/maxresdefault.jpg'}
-                        username={'briancoco'}
-                        pfp={'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png'}
-                    />
+
+                    {user.watched && user.watched.map((video) => <Video 
+                        name={video.name}
+                        id={video._id}
+                        key={video._id}
+                        thumbnail={video.thumbnail}
+                        username={video.createdBy.username}
+                        pfp={video.createdBy.pfp}
+                    />)}
+                    
                 </div>
             </section>
             </div>
