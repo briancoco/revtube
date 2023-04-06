@@ -3,7 +3,7 @@ import Video from './Video';
 import FileUpload from './FileUpload';
 import {useState, useEffect} from 'react';
 
-const ProfilePage = () => {
+const ProfilePage = ({setUserLoggedIn, navigate}) => {
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
 
@@ -28,18 +28,25 @@ const ProfilePage = () => {
         }
         handleUserInfo();
     }, [])
+
+    const handleLogOut = () => {
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+        setUserLoggedIn(false);
+        navigate('/login');
+    }
     
 
   return (
     <div>
         {!user && !error && <div className='system-message-profile'>Loading...</div>}
-        {!user && error && <div className='system-message-profile'>Error, try again. </div>}
+        {!user && error && <div className='system-message-profile' style={{color: 'red'}}>Error, try again. </div>}
 
         {user && !error &&
             <div>
             <section className='profile-header'>
-                <img className='profile-img' src={user.pfp}></img>
+                <img className='profile-img' src={user.pfp} alt=''></img>
                 <FileUpload setUser={setUser} user={user}/>
+                <button className='logout-btn' onClick={handleLogOut}>Log Out</button>
                 <h1 className='profile-name'>Brian Nguyen</h1>
                 <p className='profile-username'>{user.username}</p>
             </section>

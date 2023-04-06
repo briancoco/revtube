@@ -353,3 +353,15 @@ input[type="file"]:focus + label {
   flex-direction: column;
   padding: 5px;
 }
+
+.logout-btn {
+  border: none;
+  background-color: white;
+  color: red;
+  font-size: 10px;
+  text-decoration: underline;
+}
+
+.logout-btn:hover {
+  color: rgb(184, 5, 5);
+}

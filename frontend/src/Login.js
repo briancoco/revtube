@@ -1,7 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom';
 import {useState} from 'react';
-const Login = ({navigate}) => {
+const Login = ({navigate, setUserLoggedIn}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -24,7 +24,8 @@ const Login = ({navigate}) => {
             if(!response.ok) {
                 throw new Error('failed to login');
             }
-
+            
+            setUserLoggedIn(true);
             navigate('/');
 
         } catch (error) {
