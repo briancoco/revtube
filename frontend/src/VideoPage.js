@@ -39,6 +39,7 @@ const VideoPage = () => {
         }
   
         response = await response.json();
+        console.log(response.video);
   
         return response.video;
   
@@ -96,7 +97,7 @@ const VideoPage = () => {
         <div className='video-info'>
           <div className='video-header'>
             <h1>{video ? video.name : ''}</h1>
-            <h5>4 years ago</h5>
+            <h5>{video ? video.date : ''}</h5>
             <div className='video-user'>
               <img className='profile-icon' alt='' src={video ? video.createdBy.pfp : ''}></img>
               <span className='video-user-name'>{video ? video.createdBy.username : ''}</span>

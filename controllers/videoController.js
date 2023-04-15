@@ -42,8 +42,6 @@ const getVideos = async (req, res) => {
         select: 'username pfp'
     });
 
-
-    //TO-DO add different querying functionalities
     res.status(statusCodes.OK).json({videos});
 
 }
@@ -62,7 +60,6 @@ const getVideo = async (req, res) => {
     const {id} = req.params;
     let liked = false;
 
-    //TODO TOMORROW
     let video = await Video.findOne({_id:id});
     await video.populate({
         path: 'createdBy',
@@ -73,6 +70,22 @@ const getVideo = async (req, res) => {
         liked = true;
     }
 
+    //parse date
+    const timeNow = new Date();
+    const timeMs =  timeNow.getTime() -  Date.parse(video.createdAt);
+    const days = Math.floor(timeMs / 1000 / 60 / 60 / 24);
+    let date;
+    if(days < 32) {
+        date = `${days} days ago`;
+    } else if(days < 365) {
+        const months = Math.floor(days / 32);
+        date = `${months} months ago`;
+    } else {
+        const years = Math.floor(days / 365);
+        date = `${years} years ago`;
+    }
+
+
     let response = {
         name: video.name,
         description: video.description,
@@ -80,6 +93,7 @@ const getVideo = async (req, res) => {
         likes: video.likes.length,
         createdBy: video.createdBy,
         views: video.views,
+        date
     }
 
     res.status(statusCodes.OK).json({video: response});
