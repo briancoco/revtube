@@ -2,6 +2,8 @@ import React from 'react'
 import Video from './Video';
 import FileUpload from './FileUpload';
 import {useState, useEffect} from 'react';
+import loadingImg from './assets/loading.gif';
+import errorImg from './assets/error.gif';
 
 const ProfilePage = ({setUserLoggedIn, navigate}) => {
     const [user, setUser] = useState(null);
@@ -38,8 +40,12 @@ const ProfilePage = ({setUserLoggedIn, navigate}) => {
 
   return (
     <div>
-        {!user && !error && <div className='system-message-profile'>Loading...</div>}
-        {!user && error && <div className='system-message-profile' style={{color: 'red'}}>Error, try again. </div>}
+        {!user && !error && <div className='system-message-profile'><img src={loadingImg} className='loading-img' alt=''></img></div>}
+        {!user && error && 
+            <div className='system-message-profile'>
+                <img src={errorImg} alt='' className='loading-img'></img>
+                <p className='error-msg'>Error, please try again.</p>
+            </div>}
 
         {user && !error &&
             <div>

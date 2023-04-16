@@ -44,7 +44,7 @@ function App() {
         <Route path='/' element={<Layout userLoggedIn={userLoggedIn}/>}>
           <Route index element={<Home />} />
           <Route path=':id' element={<VideoPage />} />
-          <Route path='upload' element={<UploadPage />} />
+          <Route path='upload' element={<UploadPage navigate={navigate}/>} />
           <Route path='login' element={<Login navigate={navigate} setUserLoggedIn={setUserLoggedIn}/>} />
           <Route path='register' element={<Register navigate={navigate}/>} />
           <Route path='profile' element={<ProfilePage setUserLoggedIn={setUserLoggedIn} navigate={navigate}/>} />

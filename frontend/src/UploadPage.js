@@ -1,13 +1,20 @@
 import React from 'react'
 import {FcAddImage, FcVideoFile} from 'react-icons/fc'
 import { useState } from 'react'
+import { Link } from 'react-router-dom';
+import successImg from './assets/success.gif';
+import errorImg from './assets/error.gif';
+
+//implement redirection using useTimeout();
 
 
-const UploadPage = () => {
+const UploadPage = ({navigate}) => {
   const [file, setFile] = useState(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
+  const [error, setError] = useState(null);
+  const [uploaded, setUploaded] = useState(false);
 
   const handleUpload = async (e) => {
     //calls uploadVideo
@@ -44,7 +51,9 @@ const UploadPage = () => {
       if(!createVideo.ok) {
         throw new Error('Video not created sucessfully');
       }
+      setUploaded(true);
     } catch (error) {
+      setError(error.message);
       console.log('Video not created successfully');
     }
 
@@ -63,22 +72,16 @@ const UploadPage = () => {
     const video = new FormData();
     video.append('video', file);
 
-    try {
-      const response = await fetch('/api/videos/upload', {
-        method: 'POST',
-        body: video
-      });
+    const response = await fetch('/api/videos/upload', {
+      method: 'POST',
+      body: video
+    });
 
-      if(!response.ok) {
-        throw new Error('File upload not successful');
-      }
-
-      return file.name;
-
-
-    } catch (error) {
-      console.log('Error uploading video file');
+    if(!response.ok) {
+      throw new Error('File upload not successful');
     }
+
+    return file.name;
 
   };
 
@@ -91,24 +94,19 @@ const UploadPage = () => {
     const imageData = new FormData();
     imageData.append('image', image);
 
-    try {
-      let response = await fetch('/api/videos/upload/image', {
-        method: 'POST',
-        body: imageData
-      });
+    let response = await fetch('/api/videos/upload/image', {
+      method: 'POST',
+      body: imageData
+    });
 
-      if(!response.ok) {
-        throw new Error('File upload not successful');
-      }
-
-      response = await response.json();
-
-      return response.msg;
-
-
-    } catch (error) {
-      console.log('Error uploading video file');
+    if(!response.ok) {
+      throw new Error('File upload not successful');
     }
+
+    response = await response.json();
+
+    return response.msg;
+
 
   }
 
@@ -126,21 +124,46 @@ const UploadPage = () => {
 
   return (
     <div className='UploadPage'>
-        <form className='upload-form' onSubmit={handleUpload}>
-            <label htmlFor='upload-name'>Name</label>
-            <input id='upload-name' type='text' required value={name} onChange={(e) => setName(e.target.value)}></input>
 
-            <label htmlFor='upload-description'>Description</label>
-            <textarea id='upload-description' type='text' value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+      {uploaded && !error && 
+        <div className='system-message-profile'>
+          <img src={successImg} alt='' className='loading-img'></img>
+          <p className='error-msg'>Video uploaded</p>
+          <Link to='/' style={{color: 'lightblue'}}>Return Home</Link>
+        </div>
+      }
 
-            <FcVideoFile />
-            <input id='upload-video' type='file' required onChange={handleVideoFile}></input>
+      {!uploaded && error &&  
+        <div className='system-message-profile'>
+          <img src={errorImg} alt='' className='loading-img'></img>
+          <p className='error-msg'>Problem uploading, please refresh and try again.</p>
+        </div>
+      }
+        
 
-            <FcAddImage />
-            <input id='upload-thumbnail' type='file' required onChange={handleImageFile}></input>
+        { !uploaded && !error &&
+          <form className='upload-form' onSubmit={handleUpload}>
+              <label htmlFor='upload-name'>Name</label>
+              <input id='upload-name' type='text' required value={name} onChange={(e) => setName(e.target.value)}></input>
 
-            <button className='submit-btn' type='submit'>Submit</button>
-        </form>
+              <label htmlFor='upload-description'>Description</label>
+              <textarea id='upload-description' type='text' value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+
+              <section className='upload-field'>
+                <FcVideoFile />
+                <label htmlFor='upload-video'>Choose Video</label>
+                <input id='upload-video' type='file' required onChange={handleVideoFile}></input>
+              </section>
+
+              <section className='upload-field'>
+                <FcAddImage />
+                <label htmlFor='upload-thumbnail'>Choose Image</label>
+                <input id='upload-thumbnail' type='file' required onChange={handleImageFile}></input>
+              </section>
+
+              <button className='submit-btn' type='submit'>Submit</button>
+          </form>
+        }
     </div>
   )
 }

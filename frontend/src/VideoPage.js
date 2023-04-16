@@ -5,6 +5,8 @@ import VideoSidebar from './VideoSidebar';
 import Comments from './Comments';
 import {BiCaretRightSquare} from 'react-icons/bi';
 import {BsHeartFill, BsHeart, BsFillChatRightTextFill} from 'react-icons/bs';
+import loadingImg from './assets/loading.gif';
+import errorImg from './assets/error.gif';
 
 const VideoPage = () => {
 
@@ -15,6 +17,7 @@ const VideoPage = () => {
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(0);
   const [comments, setComments] = useState([]);
+  const [error, setError] = useState(null);
 
   
 
@@ -44,6 +47,7 @@ const VideoPage = () => {
         return response.video;
   
       } catch (error) {
+        setError(error.message);
         console.log(error.message);
       }
     }
@@ -88,7 +92,14 @@ const VideoPage = () => {
 
   return (
     <div className='VideoPage'>
-
+      {!video && !error && <div className='system-message-profile'><img src={loadingImg} className='loading-img' alt=''></img></div>}
+      {!video && error && 
+          <div className='system-message-profile'>
+              <img src={errorImg} alt='' className='loading-img'></img>
+              <p className='error-msg'>Error, please try again.</p>
+          </div>
+      }
+      {video && !error && <>
       <div className='video-player-wrapper'> 
       <video className='video-player' width='950px' muted autoPlay controls src={`/api/videos/stream/${id}`}></video>
       </div>
@@ -139,7 +150,8 @@ const VideoPage = () => {
         </div>
 
       </div>
-
+      </>
+      }
     </div>
   )
 }
